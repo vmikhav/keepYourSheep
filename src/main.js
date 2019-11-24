@@ -32,6 +32,9 @@ class Game extends Phaser.Game {
       } else {
         h = (window.innerHeight + 20);// * window.devicePixelRatio;
       }
+      if (h <= 20) {
+        return;
+      }
 
       const scaleMode = 'FIT';
       const DEFAULT_WIDTH = gameConfig.gameOptions.width;

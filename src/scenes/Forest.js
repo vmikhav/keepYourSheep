@@ -137,15 +137,18 @@ export default class extends Phaser.Scene {
     }
   }
 
-  applySymbol(symbol) {
-    if (this.canRecognize && symbol.name) {
-      if (symbol.index === this.currentSymbol) {
-        this.successful++;
-        this.canRecognize = false;
-        this.changeTimer = false;
-        // this.timerPosition = -9.99;
-        this.timerColor = config.normalTimerColor;
-        this.step();
+  applySymbol(symbols) {
+    if (this.canRecognize) {
+      for(const symbol of symbols) {
+        if (symbol.index === this.currentSymbol) {
+          this.successful++;
+          this.canRecognize = false;
+          this.changeTimer = false;
+          // this.timerPosition = -9.99;
+          this.timerColor = config.normalTimerColor;
+          this.step();
+          break;
+        }
       }
     }
   }

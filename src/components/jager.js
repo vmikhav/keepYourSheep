@@ -14,7 +14,8 @@ export default class Jager {
 
     this.symbolsRules = [
       {
-        symbol: this.symbols['|'], sections: [{x: 0, y: 1}], quarters: function (sX, sY, eX, eY) {
+        symbol: this.symbols['|'],
+        sections: [{x: -1, y: 0, skip: true}, {x: 0, y: 1}], quarters: function (sX, sY, eX, eY) {
           return sY === 0 && eY === 3;
         }
       },
@@ -24,12 +25,14 @@ export default class Jager {
         }
       },
       {
-        symbol: this.symbols['_'], sections: [{x: 1, y: 0}], quarters: function (sX, sY, eX, eY) {
+        symbol: this.symbols['_'],
+        sections: [{x: 0, y: 1, skip: true}, {x: 1, y: 0}], quarters: function (sX, sY, eX, eY) {
           return sX === 0 && eX === 3;
         }
       },
       {
-        symbol: this.symbols['_'], sections: [{x: -1, y: 0}], quarters: function (sX, sY, eX, eY) {
+        symbol: this.symbols['_'],
+        sections: [{x: 0, y: 1, skip: true}, {x: -1, y: 0}], quarters: function (sX, sY, eX, eY) {
           return sX === 3 && eX === 0;
         }
       },
@@ -108,21 +111,21 @@ export default class Jager {
       },
       {
         symbol: this.symbols['<'],
-        sections: [{x: -1, y: 0}, {x: 0, y: 1}],
+        sections: [{x: 0, y: 1, skip: true}, {x: -1, y: 0}, {x: 0, y: 1}],
         quarters: function (sX, sY, eX, eY) {
           return sX >= 2 && eX >= 2 && sY === 0 && eY === 3;
         }
       },
       {
         symbol: this.symbols['<'],
-        sections: [{x: 0, y: 1}, {x: -1, y: 0}],
+        sections: [{x: 0, y: 1}, {x: 1, y: 0}],
         quarters: function (sX, sY, eX, eY) {
           return sX >= 2 && eX >= 2 && sY === 0 && eY === 3;
         }
       },
       { // bottom to top
         symbol: this.symbols['<'],
-        sections: [{x: 1, y: 0}, {x: 0, y: -1, skip: true}, {x: -1, y: 0}],
+        sections: [{x: -1, y: 0}, {x: 0, y: -1, skip: true}, {x: 1, y: 0}],
         quarters: function (sX, sY, eX, eY) {
           return sX >= 3 && eX >= 2 && sY === 3 && eY === 0;
         }
@@ -137,21 +140,21 @@ export default class Jager {
       },
       {
         symbol: this.symbols['>'],
-        sections: [{x: 1, y: 0}, {x: 0, y: 1}],
+        sections: [{x: 0, y: 1, skip: true}, {x: 1, y: 0}, {x: 0, y: 1}],
         quarters: function (sX, sY, eX, eY) {
           return sX <= 1 && eX <= 1 && sY === 0 && eY === 3;
         }
       },
       {
         symbol: this.symbols['>'],
-        sections: [{x: 0, y: 1}, {x: 1, y: 0}],
+        sections: [{x: 0, y: 1}, {x: -1, y: 0}],
         quarters: function (sX, sY, eX, eY) {
           return sX <= 1 && eX <= 1 && sY === 0 && eY === 3;
         }
       },
       { // bottom to top
         symbol: this.symbols['>'],
-        sections: [{x: -1, y: 0}, {x: 0, y: -1, skip: true}, {x: 1, y: 0}],
+        sections: [{x: 1, y: 0}, {x: 0, y: -1, skip: true}, {x: -1, y: 0}],
         quarters: function (sX, sY, eX, eY) {
           return sX <= 1 && eX <= 1 && sY === 3 && eY === 0;
         }
@@ -233,7 +236,7 @@ export default class Jager {
   }
 
   recognise(debug = false) {
-    let res = this.symbols[null];
+    let res = [];
     if (!this.path.length) {return res;}
 
     let time;
@@ -275,10 +278,12 @@ export default class Jager {
           }
         }
         if (isRuleGood && si >= sections.length) {
-          res = rule.symbol;
-          break;
+          res.push(rule.symbol);
         }
       }
+    }
+    if (res.length === 0) {
+      res.push(this.symbols[null]);
     }
     if (debug) {
       console.log('performance', window.performance.now() - time);
@@ -295,7 +300,7 @@ export default class Jager {
     this.path.push(point);
   }
 
-  addPoint(point, distanceFilter = 50, smoothFactor = 0.75) {
+  addPoint(point, distanceFilter = 25, smoothFactor = 0.75) {
     if (!this.path.length) {
       this.pushPoint(point);
     }
