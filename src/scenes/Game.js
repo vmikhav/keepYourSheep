@@ -56,7 +56,7 @@ export default class extends Phaser.Scene {
           this.countPanel.show(null, config.lang.sheep + ': ' + config.sheepCurrent + ' / ' + config.sheepTotal);
 
           if (config.sheepCurrent === 0) {
-            if (config.gameStat.total === config.gameStat.failed) {
+            if (config.gameStat.total && config.gameStat.total === config.gameStat.failed) {
               this.panel.show(0, config.lang.intro7);
             } else if (config.permanentMode && config.gameStat.failSequence < config.gameStat.total) {
               this.panel.show(2, config.lang.lostSheep);

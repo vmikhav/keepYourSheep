@@ -80,7 +80,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./dist/1.bundle.js.LICENSE"
   },
   {
-    "revision": "a60a746eba701efcab76",
+    "revision": "a09ba4317fdbd4dbc347",
     "url": "./dist/bundle.js"
   },
   {
@@ -88,7 +88,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./dist/bundle.js.LICENSE"
   },
   {
-    "revision": "42bd5ecebb9ea0efe79aa69f2cbbb32c",
+    "revision": "811e6ba7900eca1ce0203f000bf687f9",
     "url": "./index.html"
   },
   {
