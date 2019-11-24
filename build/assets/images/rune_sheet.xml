@@ -1,0 +1,11 @@
+﻿<TextureAtlas imagePath="rune_sheet.png">
+	<SubTexture name="rune_9" x="58" y="285" width="56" height="93"/>
+	<SubTexture name="rune_8" x="58" y="190" width="56" height="93"/>
+	<SubTexture name="rune_7" x="58" y="95" width="56" height="93"/>
+	<SubTexture name="rune_6" x="58" y="0" width="56" height="93"/>
+	<SubTexture name="rune_5" x="0" y="380" width="56" height="93"/>
+	<SubTexture name="rune_4" x="0" y="285" width="56" height="93"/>
+	<SubTexture name="rune_3" x="0" y="190" width="56" height="93"/>
+	<SubTexture name="rune_2" x="0" y="95" width="56" height="93"/>
+	<SubTexture name="rune_1" x="0" y="0" width="56" height="93"/>
+</TextureAtlas>

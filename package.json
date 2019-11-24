@@ -1,0 +1,42 @@
+{
+  "name": "keep-your-sheep",
+  "version": "0.1.0",
+  "description": "An arcade game with symbol recognition.",
+  "author": "Volodymyr Mikhav <mihaw.wolodymyr@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack",
+    "prod": "webpack --config webpack.production.config.js",
+    "deploy": "npm run prod && node deploy.js",
+    "cordova": "webpack --config webpack.cordova.config.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "babel-eslint": "^9.0.0",
+    "babel-loader": "^8.0.2",
+    "babel-polyfill": "^6.26.0",
+    "browser-sync": "^2.26.3",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "clean-webpack-plugin": "^1.0.1",
+    "copy-webpack-plugin": "^5.0.0",
+    "eslint": "^5.14.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "expose-loader": "^0.7.3",
+    "ftp-deploy": "^2.3.1",
+    "html-webpack-plugin": "^3.2.0",
+    "workbox-webpack-plugin": "^4.0.0",
+    "terser-webpack-plugin": "^2.2.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {
+    "phaser": "^3.0.0-beta.4",
+    "webfontloader": "^1.6.28"
+  }
+}
