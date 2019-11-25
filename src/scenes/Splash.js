@@ -12,8 +12,11 @@ export default class extends Phaser.Scene {
     this.load.atlasXML('ui', 'assets/images/uipack_rpg_sheet.png', 'assets/images/uipack_rpg_sheet.xml');
     this.load.atlasXML('runes', 'assets/images/rune_sheet.png', 'assets/images/rune_sheet.xml');
     this.load.image('forest_background', 'assets/images/forest_background.png');
+    this.load.image('musicOn', 'assets/images/musicOn.png');
+    this.load.image('musicOff', 'assets/images/musicOff.png');
     this.load.spritesheet('portraits', 'assets/images/portraits.png', {frameWidth: 32, frameHeight: 32});
     this.load.spritesheet('sheep', 'assets/images/sheep_spritesheet.png', {frameWidth: 16, frameHeight: 16});
+    this.load.audio('music', 'assets/sounds/Red Carpet Wooden Floor.mp3')
 
     this.percentText = this.make.text({
       x: this.cameras.main.width / 2,

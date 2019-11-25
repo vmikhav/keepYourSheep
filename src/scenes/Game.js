@@ -3,6 +3,7 @@ import config from '../config';
 import { generateSheep, showMap } from '../utils'
 import Button from '../components/button'
 import Panel from '../components/panel'
+import ImageButton from '../components/imageButton'
 
 export default class extends Phaser.Scene {
   constructor () {
@@ -12,6 +13,10 @@ export default class extends Phaser.Scene {
   preload () {}
 
   create (params) {
+    if (!config.music) {
+      config.music = this.sound.add('music', config.musicParams);
+      config.music.play();
+    }
     this.needBackground = params && params.background;
     this.progress = params && params.progress ? params.progress : -1;
     this.gameOver = config.sheepCurrent === config.sheepTotal;
@@ -28,6 +33,11 @@ export default class extends Phaser.Scene {
     this.time.addEvent({
       delay: 100,
       callback: () => {
+        this.muteButton = new ImageButton(this, worldView.left + 60, worldView.top + 60, 80, 80,
+          'buttonSquare_brown', config.musicMuted ? 'musicOff' : 'musicOn', () => {this.changeMuteState();}).setAlpha(0);
+        this.add.existing(this.muteButton);
+        this.muteButton.show();
+
         this.panel = new Panel(this, worldView.centerX, worldView.bottom - 200, 600, 300);
         this.add.existing(this.panel);
         if (this.gameOver) {
@@ -85,6 +95,17 @@ export default class extends Phaser.Scene {
     }
   }
 
+  changeMuteState() {
+    config.musicMuted = !config.musicMuted;
+    config.music.setMute(config.musicMuted);
+    if (config.musicMuted) {
+      config.music.pause();
+    } else {
+      config.music.resume();
+    }
+    this.muteButton.setImage(config.musicMuted ? 'musicOff' : 'musicOn');
+  }
+
   selectLevelDifficult() {
     switch (config.sheepCurrent) {
       case 0: case 1:
@@ -104,6 +125,7 @@ export default class extends Phaser.Scene {
 
   startTour() {
     this.button.hide();
+    this.muteButton.hide();
     this.panel.hide();
     this.countPanel.hide();
     this.tweens.add({
@@ -120,6 +142,7 @@ export default class extends Phaser.Scene {
 
   openMenu() {
     this.button.hide();
+    this.muteButton.hide();
     this.panel.hide();
     this.tweens.add({
       targets: this.backgroundMask,
@@ -128,6 +151,8 @@ export default class extends Phaser.Scene {
       duration: 1500,
       delay: 500,
       onComplete: () => {
+        config.music.stop();
+        config.music = null;
         this.scene.start('MainMenuScene');
       }
     });

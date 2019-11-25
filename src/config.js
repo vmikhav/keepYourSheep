@@ -51,5 +51,16 @@ export default {
   permanentMode: false,
   sheepTotal: 15,
   sheepCurrent: 15,
+  music: null,
+  musicMuted: false,
+  musicParams: {
+    mute: false,
+    volume: .5,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: true,
+    delay: 500
+  },
   localStorageName: 'keep_your_sheep'
 }
