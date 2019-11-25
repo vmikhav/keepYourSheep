@@ -1,8 +1,0 @@
-@font-face {
-  font-family: 'Press Start 2P';
-  src: url('press-start-2p-v6.woff2') format('woff2'),
-       url('press-start-2p-v6.woff') format('woff'),
-       url('press-start-2p-v6.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
