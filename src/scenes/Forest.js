@@ -30,7 +30,6 @@ export default class extends Phaser.Scene {
 
     this.timerColor = config.normalTimerColor;
 
-    //this.basePosition = {x: this.cameras.main.centerX, y: Math.ceil(this.cameras.main.centerY - (this.cameras.main.height / 4))};
     this.basePosition = {x: this.cameras.main.centerX, y: this.cameras.main.centerY};
 
     this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'forest_background')
@@ -64,7 +63,7 @@ export default class extends Phaser.Scene {
 
     this.tweenIn = this.tweens.add({
       targets: [this.rune],
-      y: { from: -250, to: this.basePosition.y },
+      y: this.basePosition.y,
       ease: 'Sine.easeOut',
       duration: 550,
       delay: 10,
@@ -75,7 +74,7 @@ export default class extends Phaser.Scene {
     this.tweenIn.pause();
     this.tweenOut = this.tweens.add({
       targets: [this.rune],
-      y: { from: this.basePosition.y, to: -250 },
+      y: -250,
       ease: 'Sine.easeOut',
       duration: 550,
       delay: 200,
@@ -210,7 +209,7 @@ export default class extends Phaser.Scene {
       delay: 1500,
       onStart: () => {
         this.drawTimer = false;
-        this.rune.setY(-250);
+        this.rune.destroy();
       },
       onComplete: () => {
         if (this.isTutorial) {

@@ -120,7 +120,7 @@ export default class Jager {
         symbol: this.symbols['<'],
         sections: [{x: 0, y: 1}, {x: 1, y: 0}],
         quarters: function (sX, sY, eX, eY) {
-          return sX >= 2 && eX >= 2 && sY === 0 && eY === 3;
+          return eX >= 2 && sY === 0 && eY === 3;
         }
       },
       { // bottom to top
@@ -149,7 +149,7 @@ export default class Jager {
         symbol: this.symbols['>'],
         sections: [{x: 0, y: 1}, {x: -1, y: 0}],
         quarters: function (sX, sY, eX, eY) {
-          return sX <= 1 && eX <= 1 && sY === 0 && eY === 3;
+          return eX <= 1 && sY === 0 && eY === 3;
         }
       },
       { // bottom to top
@@ -243,7 +243,7 @@ export default class Jager {
     if (debug) {
       time = window.performance.now();
     }
-    let sections = [], lastId = -50, lastSection = {x: 0, y: 0, ratio: -5};
+    let sections = [], lastId = -50, lastSection = {x: 0, y: 0, angle: -500};
     let minX = this.path[0].x, minY = this.path[0].y, maxX = this.path[0].x, maxY = this.path[0].y;
     for (let i = 1; i < this.path.length; i++) {
       if (minX > this.path[i].x) {minX = this.path[i].x;}
@@ -251,7 +251,7 @@ export default class Jager {
       if (minY > this.path[i].y) {minY = this.path[i].y;}
       if (maxY < this.path[i].y) {maxY = this.path[i].y;}
       let section = this.sectionOrient(this.path[i - 1], this.path[i]);
-      if ((section.x !== lastSection.x || section.y !== lastSection.y) && Math.abs(section.ratio - lastSection.ratio) > 0.15) {
+      if ((section.x !== lastSection.x || section.y !== lastSection.y) && Math.abs(section.angle - lastSection.angle) > 15) {
         if (i - lastId < 4 && sections.length >= 2 && section.x === sections[sections.length-2].x && section.y === sections[sections.length-2].y) {
           lastSection = sections[sections.length-2];
           sections.pop();
@@ -327,12 +327,12 @@ export default class Jager {
     let yDiff  = p2.y - p1.y;
     let xADiff = Math.abs(xDiff);
     let yADiff = Math.abs(yDiff);
-    const ratio = xADiff / (xADiff + yADiff);
+    const angle = Math.atan2(yDiff, xDiff) * 180 / Math.PI;
 
     let x = 0, y = 0;
 
     if (xADiff >= yADiff) {x = sign(xDiff);} else {y = sign(yDiff);}
-    return {x, y, ratio}
+    return {x, y, angle}
   }
 
   point(evt) {
