@@ -1,6 +1,8 @@
 import Jager from './components/jager'
 import config from './config'
 import Sheep from './sprites/Sheep'
+import Boom from './sprites/Boom'
+import Phaser from "phaser"
 
 export const showMap = (scene) => {
   scene.map = scene.add.tilemap('fieldMap');
@@ -54,12 +56,19 @@ export const resetGameStat = () => {
     completed: 0,
     failed: 0,
     failSequence: 0,
+    sheepDelta: 0,
   };
   config.sheepCurrent = 0;
   config.permanentMode = false;
 }
 
-export const generateSheep = (scene, count, previousSheep = null) => {
+export const generateSheep = (scene, count, previousSheep = null, newSheep = 0) => {
+  scene.anims.create({
+    key: 'creating',
+    frames: scene.anims.generateFrameNumbers('boom', { start: 0, end: 14 }),
+    frameRate: 10,
+    repeat: 0
+  });
   const sheep = [];
   const positions = {x: {}, y: {}};
   const y = [];
@@ -84,6 +93,16 @@ export const generateSheep = (scene, count, previousSheep = null) => {
     }
     const item = new Sheep(scene, position.x, position.y, frame);
     scene.add.existing(item);
+    if (i >= count - newSheep) {
+      scene.tweens.add({
+        targets: item,
+        alpha: {from: 0, to: 1},
+        duration: 500
+      });
+      const boom = new Boom(scene, position.x, position.y);
+      scene.add.existing(boom);
+      boom.play('creating');
+    }
     sheep.push(item);
   }
   return sheep;

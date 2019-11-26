@@ -47,6 +47,7 @@ export default {
     completed: 0,
     failed: 0,
     failSequence: 0,
+    sheepDelta: 0,
   },
   permanentMode: false,
   sheepTotal: 15,

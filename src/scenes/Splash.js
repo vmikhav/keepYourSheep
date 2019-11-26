@@ -16,6 +16,8 @@ export default class extends Phaser.Scene {
     this.load.image('musicOff', 'assets/images/musicOff.png');
     this.load.spritesheet('portraits', 'assets/images/portraits.png', {frameWidth: 32, frameHeight: 32});
     this.load.spritesheet('sheep', 'assets/images/sheep_spritesheet.png', {frameWidth: 16, frameHeight: 16});
+    this.load.spritesheet('clouds', 'assets/images/clouds.png', {frameWidth: 400, frameHeight: 166});
+    this.load.spritesheet('boom', 'assets/images/boom.png', {frameWidth: 128, frameHeight: 128});
     this.load.audio('music', 'assets/sounds/Red Carpet Wooden Floor.mp3')
 
     this.percentText = this.make.text({

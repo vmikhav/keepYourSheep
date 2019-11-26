@@ -4,6 +4,7 @@ import { generateSheep, showMap } from '../utils'
 import Button from '../components/button'
 import Panel from '../components/panel'
 import ImageButton from '../components/imageButton'
+import Cloud from '../sprites/Cloud'
 
 export default class extends Phaser.Scene {
   constructor () {
@@ -26,7 +27,12 @@ export default class extends Phaser.Scene {
       this.selectLevelDifficult()
     }
     showMap(this);
-    this.sheep = generateSheep(this, config.sheepCurrent);
+    this.sheep = generateSheep(this, config.sheepCurrent, null, config.gameStat.sheepDelta);
+    this.clouds = [];
+    for (let i = 0; i < 2; i++) {
+      this.clouds.push(new Cloud(this));
+      this.add.existing(this.clouds[i]);
+    }
 
     const worldView = this.cameras.main.worldView;
 
@@ -40,6 +46,7 @@ export default class extends Phaser.Scene {
 
         this.panel = new Panel(this, worldView.centerX, worldView.bottom - 200, 600, 300);
         this.add.existing(this.panel);
+
         if (this.gameOver) {
           this.button = new Button(this, worldView.centerX, worldView.top - 100, 300, 120, config.lang.menu, 'buttonLong_brown', () => this.openMenu());
           this.add.existing(this.button);

@@ -186,13 +186,16 @@ export default class extends Phaser.Scene {
     if (!this.isTutorial) {
       config.gameStat.total++;
       if (this.successful < this.runesCount) {
+        config.gameStat.sheepDelta = 0;
         if (config.permanentMode) {
+          config.gameStat.sheepDelta = -config.sheepCurrent;
           config.sheepCurrent = 0;
         }
         config.gameStat.failed++;
         config.gameStat.failSequence++;
       } else {
         config.sheepCurrent++;
+        config.gameStat.sheepDelta = 1;
         config.gameStat.completed++;
         config.gameStat.failSequence = 0;
       }
