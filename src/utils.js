@@ -58,6 +58,7 @@ export const resetGameStat = () => {
     failSequence: 0,
     sheepDelta: 0,
   };
+  config.score = 0;
   config.sheepCurrent = 0;
   config.permanentMode = false;
 }
@@ -66,7 +67,7 @@ export const generateSheep = (scene, count, previousSheep = null, newSheep = 0) 
   scene.anims.create({
     key: 'creating',
     frames: scene.anims.generateFrameNumbers('boom', { start: 0, end: 14 }),
-    frameRate: 10,
+    frameRate: 15,
     repeat: 0
   });
   const sheep = [];
@@ -97,7 +98,7 @@ export const generateSheep = (scene, count, previousSheep = null, newSheep = 0) 
       scene.tweens.add({
         targets: item,
         alpha: {from: 0, to: 1},
-        duration: 500
+        duration: 400
       });
       const boom = new Boom(scene, position.x, position.y);
       scene.add.existing(boom);

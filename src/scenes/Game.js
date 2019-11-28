@@ -17,6 +17,10 @@ export default class extends Phaser.Scene {
     if (!config.music) {
       config.music = this.sound.add('music', config.musicParams);
       config.music.play();
+      config.musicMuted = localStorage[config.localStorageName + '.muted'] === 'true';
+      if (config.musicMuted) {
+        this.changeMuteState(config.musicMuted);
+      }
     }
     this.needBackground = params && params.background;
     this.progress = params && params.progress ? params.progress : -1;
@@ -29,8 +33,8 @@ export default class extends Phaser.Scene {
     showMap(this);
     this.sheep = generateSheep(this, config.sheepCurrent, null, config.gameStat.sheepDelta);
     this.clouds = [];
-    for (let i = 0; i < 2; i++) {
-      this.clouds.push(new Cloud(this));
+    for (let i = 0; i < 3; i++) {
+      this.clouds.push(new Cloud(this, i + 1));
       this.add.existing(this.clouds[i]);
     }
 
@@ -40,7 +44,7 @@ export default class extends Phaser.Scene {
       delay: 100,
       callback: () => {
         this.muteButton = new ImageButton(this, worldView.left + 60, worldView.top + 60, 80, 80,
-          'buttonSquare_brown', config.musicMuted ? 'musicOff' : 'musicOn', () => {this.changeMuteState();}).setAlpha(0);
+          'buttonSquare_brown', config.musicMuted ? 'musicOff' : 'musicOn', () => {this.changeMuteState(!config.musicMuted);}).setAlpha(0);
         this.add.existing(this.muteButton);
         this.muteButton.show();
 
@@ -56,7 +60,14 @@ export default class extends Phaser.Scene {
             ease: 'Sine.easeOut',
             duration: 1500,
           });
-          const text = Math.floor(this.duration/60) + ' min ' + this.duration%60 + ' sec';
+          const scoreLabel = config.permanentMode ? '.expert_high_score' : '.high_score';
+          let text = config.score + ': ' + config.score + '\n\n';
+          if (config.score > localStorage[config.localStorageName + scoreLabel]) {
+            localStorage[config.localStorageName + scoreLabel] = config.score;
+            text += config.lang.newHighScore + '!';
+          } else {
+            text += config.lang.highScore + ': ' + (localStorage[config.localStorageName + scoreLabel] || 0);
+          }
           this.panel.show(2, text);
         } else {
           this.button = new Button(this, worldView.centerX, worldView.centerY, 300, 120, config.lang.search, 'buttonLong_brown', () => this.startTour());
@@ -68,9 +79,10 @@ export default class extends Phaser.Scene {
             ease: 'Sine.easeOut',
             duration: 1500,
           });
-          this.countPanel = new Panel(this, worldView.right - 220, worldView.top + 60, 400, 75, 'panelInset_brown', '#fff', 30);
+          this.countPanel = new Panel(this, worldView.right - 220, worldView.top + 85, 400, 125, 'panelInset_brown', '#fff', 30);
           this.add.existing(this.countPanel);
-          this.countPanel.show(null, config.lang.sheep + ': ' + config.sheepCurrent + ' / ' + config.sheepTotal);
+          const text = config.lang.sheep + ': ' + config.sheepCurrent + ' / ' + config.sheepTotal + '\n' + config.lang.score + ': ' + config.score;
+          this.countPanel.show(null, text);
 
           if (config.sheepCurrent === 0) {
             if (config.gameStat.total && config.gameStat.total === config.gameStat.failed) {
@@ -102,20 +114,23 @@ export default class extends Phaser.Scene {
     }
   }
 
-  changeMuteState() {
-    config.musicMuted = !config.musicMuted;
+  changeMuteState(status) {
+    config.musicMuted = status;
+    localStorage[config.localStorageName + '.muted'] = config.musicMuted;
     config.music.setMute(config.musicMuted);
     if (config.musicMuted) {
       config.music.pause();
     } else {
       config.music.resume();
     }
-    this.muteButton.setImage(config.musicMuted ? 'musicOff' : 'musicOn');
+    if (this.muteButton) {
+      this.muteButton.setImage(config.musicMuted ? 'musicOff' : 'musicOn');
+    }
   }
 
   selectLevelDifficult() {
-    switch (config.sheepCurrent) {
-      case 0: case 1:
+    switch (config.sheepCurrent - config.gameStat.failSequence >= 2 ? 2 : 0) {
+      case -2: case -1: case 0: case 1:
         this.preset = config.presets.easy0; break;
       case 2: case 3:
         this.preset = config.presets.easy1; break;
@@ -127,6 +142,8 @@ export default class extends Phaser.Scene {
         this.preset = config.presets.middle0; break;
       case 12: case 13: case 14:
         this.preset = config.presets.middle1; break;
+      default:
+        this.preset = config.presets.hard0;
     }
   }
 

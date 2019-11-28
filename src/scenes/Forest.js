@@ -1,11 +1,31 @@
 import Phaser from 'phaser';
 import config from '../config';
 import { prepareSymbolRecognition } from '../utils';
+import Rune from '../sprites/Rune'
 
-export default class extends Phaser.Scene {
+export default class Forest extends Phaser.Scene {
 
   constructor () {
-    super({ key: 'ForestScene' })
+    super({ key: 'ForestScene' });
+
+    this.isTutorial = false;
+    this.maxSymbol = null;
+    this.timeScale = null;
+    this.maxOneTime = null;
+    this.itemScore = null;
+    this.runesCount = null;
+
+    this.scoreMultipler = 1;
+    this.gameStep = 0;
+    this.successful = 0;
+    this.score = 0;
+    this.lastSymbol = -1;
+
+    this.backgroundMask = null;
+    this.runes = [];
+
+    this.timer = null;
+    this.extraTimer = null;
   }
   init () {}
   preload () {}
@@ -16,21 +36,24 @@ export default class extends Phaser.Scene {
 
     this.maxSymbol = params && params.maxSymbol ? params.maxSymbol : 9;
     this.timeScale = params && params.timeScale ? params.timeScale : 2;
+    this.maxOneTime = params && params.maxOneTime ? params.maxOneTime : 1;
+    this.itemScore = params && params.score ? params.score : 50;
     this.runesCount = params && params.runesCount ? Phaser.Math.Between(params.runesCount[0], params.runesCount[1]) : Phaser.Math.Between(3, 6);
-    this.timerDelay = 25;
-    this.timerDelta = 1;
+
+    this.scoreMultipler = 1;
     this.gameStep = 0;
     this.successful = 0;
-
-    this.drawTimer = false;
-    this.changeTimer = false;
-    this.canRecognize = false;
-    this.timerPosition = 0;
-    this.currentSymbol = 0;
-
-    this.timerColor = config.normalTimerColor;
+    this.score = 0;
+    this.lastSymbol = -1;
 
     this.basePosition = {x: this.cameras.main.centerX, y: this.cameras.main.centerY};
+    this.additionalPositions = [
+      {x: this.cameras.main.centerX - 160, y: this.cameras.main.centerY - 310},
+      {x: this.cameras.main.centerX + 160, y: this.cameras.main.centerY - 310},
+      {x: this.cameras.main.centerX - 160, y: this.cameras.main.centerY + 310},
+      {x: this.cameras.main.centerX + 160, y: this.cameras.main.centerY + 310},
+    ];
+
 
     this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'forest_background')
       .setDisplaySize(config.gameOptions.maxWidth, config.gameOptions.maxHeight);
@@ -41,143 +64,132 @@ export default class extends Phaser.Scene {
       .setAlpha(1)
       .setScrollFactor(0);
 
-    this.timerGraphics = this.add.graphics();
-    this.rune = this.add.image(this.basePosition.x, -250, 'runes', 'rune_1')
-      .setDisplaySize(140, 233);
-
     this.tweens.add({
       targets: [this.backgroundMask],
       alpha: 0.35,
       ease: 'Sine.easeOut',
       duration: 1000,
       delay: 0,
-      onComplete: () => {
-        this.time.addEvent({
-          delay: 500,
-          callback: () => this.step()
-        });
-      }
     });
 
     prepareSymbolRecognition(this, (symbol) => { this.applySymbol(symbol); });
 
-    this.tweenIn = this.tweens.add({
-      targets: [this.rune],
-      y: this.basePosition.y,
-      ease: 'Sine.easeOut',
-      duration: 550,
-      delay: 10,
-      onComplete: () => {
-        this.runStep();
-      }
-    });
-    this.tweenIn.pause();
-    this.tweenOut = this.tweens.add({
-      targets: [this.rune],
-      y: -250,
-      ease: 'Sine.easeOut',
-      duration: 550,
-      delay: 200,
-    });
-    this.tweenOut.pause();
-
-
+    this.runes = [];
     this.timer = this.time.addEvent({
-      delay: this.timerDelay,
+      delay: 250,
       callback: () => {
-        if (!this.changeTimer) { return; }
-        this.timerPosition += this.timerDelta;
-        if (this.timerPosition >= 350) {
-          this.runeMissed();
-        } else if (this.timerPosition >= 275) {
-          this.timerColor = config.errorTimerColor;
-        } else if (this.timerPosition >= 200) {
-          this.timerColor = config.warningTimerColor;
+        let active = 0;
+        for (let i = 0; i < this.runes.length; i++) {
+          if (this.runes[i].isActive) {
+            active++;
+          }
+        }
+        if (this.runes.length < this.runesCount && active === 0) {
+          let newSymbol;
+          do {
+            newSymbol = Phaser.Math.Between(1, this.maxSymbol);
+          } while (this.lastSymbol === newSymbol);
+          this.lastSymbol = newSymbol
+          const stepDuration = config.symbolTime[newSymbol] * this.timeScale;
+          this.runes.push(new Rune(this, this.basePosition.x, this.basePosition.y, -1, newSymbol, stepDuration, () => this.runeMissed()));
+          active++;
+        }
+        if (this.runes.length === this.runesCount && active === 0) {
+          this.timer.destroy();
+          this.time.addEvent({
+              delay: 100,
+              callback: () => {
+                this.finishTour();
+              }
+          });
         }
       },
-      callbackScope: this,
       loop: true
     });
     this.timer.paused = true;
 
-
-    this.timerIn = this.time.addEvent({
-      delay: 600,
+    this.extraTimer = this.time.addEvent({
+      delay: 450,
       callback: () => {
-        this.drawTimer = false;
-        this.timerIn.paused = true;
-        this.tweenIn.restart();
-        let newSymbol;
-        do {
-          newSymbol = Phaser.Math.Between(1, this.maxSymbol);
-        } while (this.currentSymbol === newSymbol);
-        this.currentSymbol = newSymbol;
-        this.stepDuration = config.symbolTime[this.currentSymbol] * this.timeScale;
-        this.timerDelta = 350 / (this.stepDuration / this.timerDelay);
-        this.rune.setFrame('rune_' + this.currentSymbol);
-        this.canRecognize = true;
+        if (Math.random() < 0.6) {
+          return;
+        }
+        let active = 0;
+        let failed = false;
+        const positions = [];
+        let reservedSymbols = [];
+        for (let i = 0; i < this.runes.length; i++) {
+          if (this.runes[i].isActive) {
+            active++;
+            positions.push(this.runes[i].position);
+            reservedSymbols = reservedSymbols.concat(this.runes[i].symbol, config.dontUseWith[this.runes[i].symbol]);
+          }
+          if (this.runes[i].isFailed) {
+            failed = true
+          }
+        }
+        if (!failed && this.runes.length < this.runesCount && active && active < this.maxOneTime) {
+          let newSymbol, position;
+          do {
+            newSymbol = Phaser.Math.Between(1, this.maxSymbol);
+          } while (reservedSymbols.includes(newSymbol));
+          do {
+            position = Phaser.Math.Between(0, 3);
+          } while (positions.includes(position));
+          const stepDuration = config.symbolTime[newSymbol] * this.timeScale * (1 + active * 0.25);
+          this.runes.push(new Rune(this, this.additionalPositions[position].x, this.additionalPositions[position].y, position, newSymbol, stepDuration, () => this.runeMissed()));
+        }
+        if (this.runes.length === this.runesCount) {
+          this.extraTimer.destroy();
+        }
       },
-      callbackScope: this,
       loop: true
     });
-    this.timerIn.paused = true;
+    this.extraTimer.paused = true;
+
+    this.time.addEvent({
+      delay: 750,
+      callback: () => {
+        this.timer.paused = false;
+        this.extraTimer.paused = false;
+      }
+    });
   }
 
 
 
   update (time, delta) {
-    this.timerGraphics.clear();
-    if (this.drawTimer) {
-      this.timerGraphics.lineStyle(8, this.timerColor, 1);
-      this.timerGraphics.beginPath();
-
-      this.timerGraphics.arc(this.basePosition.x, this.basePosition.y, 150, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(280 + this.timerPosition), true);
-      this.timerGraphics.strokePath();
-    }
-  }
-
-  applySymbol(symbols) {
-    if (this.canRecognize) {
-      for(const symbol of symbols) {
-        if (symbol.index === this.currentSymbol) {
-          this.successful++;
-          this.canRecognize = false;
-          this.changeTimer = false;
-          // this.timerPosition = -9.99;
-          this.timerColor = config.normalTimerColor;
-          this.step();
-          break;
-        }
+    for (let i = 0; i < this.runes.length; i++) {
+      if (this.runes[i].isActive) {
+        this.runes[i].update();
       }
     }
   }
 
-  step() {
-    if (this.gameStep) {
-      this.tweenOut.restart();
+  applySymbol(symbols) {
+    let result = false;
+    const score = this.isTutorial ? -1 : this.itemScore * this.scoreMultipler;
+    for (let i = 0; i < this.runes.length; i++) {
+      if (this.runes[i].isActive) {
+        result = this.runes[i].checkSymbol(symbols, score);
+        if (result) {
+          break;
+        }
+      }
     }
-    if (this.gameStep < this.runesCount) {
-      this.timerIn.paused = false;
-    } else {
-      this.drawTimer = false;
-      this.finishTour();
+    if (result) {
+      this.successful++;
+      this.score += result;
     }
-    this.gameStep++;
-  }
-
-  runStep() {
-    this.timerColor = config.normalTimerColor;
-    this.drawTimer = true;
-    this.changeTimer = true;
-    this.timerPosition = 0;
-    this.timer.paused = false;
   }
 
   runeMissed() {
-    this.timer.paused = true;
-    this.canRecognize = false;
-    this.timerPosition = -9.99;
-    // this.step();
+    this.timer.paused = true
+    for (let i = 0; i < this.runes.length; i++) {
+      if (this.runes[i].isActive && !this.runes[i].isFailed) {
+        this.runes[i].hide();
+      }
+    }
     this.finishTour();
   }
 
@@ -190,10 +202,16 @@ export default class extends Phaser.Scene {
         if (config.permanentMode) {
           config.gameStat.sheepDelta = -config.sheepCurrent;
           config.sheepCurrent = 0;
+          config.score = 0;
         }
         config.gameStat.failed++;
         config.gameStat.failSequence++;
+        if (config.gameStat.failSequence === 3 && config.sheepCurrent) {
+          config.sheepCurrent--;
+          config.gameStat.sheepDelta = -1;
+        }
       } else {
+        config.score += this.score;
         config.sheepCurrent++;
         config.gameStat.sheepDelta = 1;
         config.gameStat.completed++;
@@ -209,10 +227,8 @@ export default class extends Phaser.Scene {
       alpha: 1,
       ease: 'Sine.easeOut',
       duration: 1000,
-      delay: 1500,
+      delay: 750,
       onStart: () => {
-        this.drawTimer = false;
-        this.rune.destroy();
       },
       onComplete: () => {
         if (this.isTutorial) {

@@ -169,6 +169,13 @@ export default class Jager {
       },
       {
         symbol: this.symbols['lighting'],
+        sections: [{x: -1, y: 0, skip: true}, {x: 0, y: 1}, {x: 0, y: -1}, {x: 0, y: 1}, {x: -1, y: 0, skip: true}],
+        quarters: function (sX, sY, eX, eY) {
+          return sY === 0 && eY === 3;
+        }
+      },
+      {
+        symbol: this.symbols['lighting'],
         sections: [{x: 0, y: 1}, {x: 1, y: 0}, {x: 0, y: 1, skip: true}, {x: -1, y: 0}, {x: 0, y: 1, skip: true}],
         quarters: function (sX, sY, eX, eY) {
           return sY === 0 && eY === 3 && sX >= eX && sX >= 1 && eX < 3;
@@ -189,11 +196,23 @@ export default class Jager {
       {
         symbol: this.symbols['pigtail'],
         sections: [
-          {x: 0, y: 1, skip: true}, {x: 1, y: 0, skip: true}, {x: 0, y: -1}, {x: -1, y: 0},
+          {x: 0, y: 1, skip: true}, {x: 1, y: 0, skip: true}, {x: 0, y: -1},
+          {x: 1, y: 0, skip: true}, {x: 0, y: -1, skip: true}, {x: -1, y: 0},
           {x: 0, y: 1}, {x: 1, y: 0}, {x: 0, y: -1, skip: true},
         ],
         quarters: function (sX, sY, eX, eY) {
-          return sX === 0 && eX === 3 && sY >= 1 && eY >= 2;
+          return sX === 0 && eX >= 2 && sY >= 1 && eY >= 2;
+        }
+      },
+      {
+        symbol: this.symbols['pigtail'],
+        sections: [
+          {x: 0, y: 1, skip: true}, {x: 1, y: 0, skip: true}, {x: 0, y: -1},
+          {x: -1, y: 0, skip: true}, {x: 0, y: 1, skip: true}, {x: 1, y: 0},
+          {x: 0, y: 1}, {x: 1, y: 0, skip: true}, {x: 0, y: -1, skip: true},
+        ],
+        quarters: function (sX, sY, eX, eY) {
+          return sX === 0 && eX >= 2 && sY >= 1 && eY >= 2;
         }
       },
 
@@ -251,7 +270,7 @@ export default class Jager {
       if (minY > this.path[i].y) {minY = this.path[i].y;}
       if (maxY < this.path[i].y) {maxY = this.path[i].y;}
       let section = this.sectionOrient(this.path[i - 1], this.path[i]);
-      if ((section.x !== lastSection.x || section.y !== lastSection.y) && Math.abs(section.angle - lastSection.angle) > 15) {
+      if ((section.x !== lastSection.x || section.y !== lastSection.y) && Math.abs(section.angle - lastSection.angle) > 18) {
         if (i - lastId < 4 && sections.length >= 2 && section.x === sections[sections.length-2].x && section.y === sections[sections.length-2].y) {
           lastSection = sections[sections.length-2];
           sections.pop();

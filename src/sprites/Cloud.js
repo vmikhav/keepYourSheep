@@ -1,27 +1,30 @@
 import Phaser from 'phaser'
 
 export default class extends Phaser.GameObjects.Sprite {
-  constructor (scene) {
+  constructor (scene, order) {
     super(scene, -400, 300, 'clouds', 0);
     this.isShowed = true;
-    this.step();
+    this.step(order * 5800);
   }
 
-  step() {
+  step(startDelay = null) {
     const worldView = this.scene.cameras.main.worldView;
     this.scene.time.addEvent({
-      delay: Phaser.Math.Between(0, 6) * 1300,
+      delay: startDelay === null ? Phaser.Math.Between(0, 8) * 1800 : startDelay,
       callback: () => {
-        const scale = Phaser.Math.Between(2, 15) / 10;
-        this.setDisplaySize(Math.floor(400 * scale), Math.floor(166 * scale));
-        const step = 125;
+        const frame = Phaser.Math.Between(0, 2);
+        const scale = Phaser.Math.Between(2, 6) / 5;
+        const width = Math.floor(400 * scale);
+        this.setDisplaySize(width, Math.floor(166 * scale));
+        const step = 185;
         const height = Math.ceil((worldView.height - 150) / step);
-        this.setY(worldView.top + 50 + Phaser.Math.Between(0, height) * step);
-        this.setFrame(Phaser.Math.Between(0, 2));
+        const y = Math.floor(worldView.top + 50 + (Phaser.Math.Between(0, height) + Phaser.Math.Between(0, height)) / 2 * step);
+        this.setY(y);
+        this.setFrame(frame);
         this.scene.tweens.add({
           targets: this,
-          x: {from: worldView.left - 400, to: worldView.right + 300},
-          duration: Phaser.Math.Between(12, 28) * 750,
+          x: {from: worldView.left - width, to: worldView.right + width},
+          duration: Math.floor((3 - scale) * 13000),
           onComplete: () => {
             this.step();
           }

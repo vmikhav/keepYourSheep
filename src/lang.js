@@ -16,6 +16,18 @@ lang.en.sheep = "Sheep";
 lang.uk.sheep = "Вівці";
 lang.ru.sheep = "Овцы";
 
+lang.en.score = "Score";
+lang.uk.score = "Бали";
+lang.ru.score = "Очки";
+
+lang.en.highScore = "High score";
+lang.uk.highScore = "Рекорд";
+lang.ru.highScore = "Рекорд";
+
+lang.en.newHighScore = "New high score";
+lang.uk.newHighScore = "Новий рекорд";
+lang.ru.newHighScore = "Новый рекорд";
+
 lang.en.search = "Search";
 lang.uk.search = "Шукати";
 lang.ru.search = "Искать";

@@ -6,13 +6,12 @@ import MainMenuScene from './scenes/MainMenu';
 import IntroScene from './scenes/Intro';
 import GameScene from './scenes/Game';
 import ForestScene from './scenes/Forest';
-import ForestGroupScene from './scenes/ForestGroup';
 
 import config from './config';
 import lang from './lang';
 
 const gameConfig = Object.assign(config, {
-  scene: [BootScene, SplashScene, MainMenuScene, IntroScene, GameScene, ForestScene, ForestGroupScene]
+  scene: [BootScene, SplashScene, MainMenuScene, IntroScene, GameScene, ForestScene]
 })
 
 class Game extends Phaser.Game {
@@ -23,6 +22,7 @@ class Game extends Phaser.Game {
     if (userLang in lang) {
       config.lang = lang[userLang];
     }
+    config.tutorialFinished = localStorage[config.localStorageName + '.tutorialFinished'] === 'true';
 
     const resize = () => {
       const w = window.innerWidth;
@@ -33,7 +33,14 @@ class Game extends Phaser.Game {
         h = (window.innerHeight + 20);// * window.devicePixelRatio;
       }
       if (h <= 20) {
+        if (config.music && !config.music.isPaused) {
+          config.music.pause();
+        }
         return;
+      } else {
+        if (config.music && config.music.isPaused) {
+          config.music.resume();
+        }
       }
 
       const scaleMode = 'FIT';

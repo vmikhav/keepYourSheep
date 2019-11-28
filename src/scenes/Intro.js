@@ -165,6 +165,7 @@ export default class extends Phaser.Scene {
 
   startGame() {
     config.tutorialFinished = true;
+    localStorage[config.localStorageName + '.tutorialFinished'] = config.tutorialFinished;
     for (let i = 0; i < this.sheep.length; i++) {
       this.sheep[i].destroy;
     }
