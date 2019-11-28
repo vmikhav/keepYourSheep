@@ -27,7 +27,7 @@ export default {
   warningTimerColor: 0xFFA300,
   errorTimerColor: 0xD80000,
   symbolTime: [
-    null, 750, 750, 1000, 1000, 1000, 1000, 1250, 1600, 1250,
+    null, 750, 750, 1000, 1000, 1000, 1000, 1400, 1600, 1400,
   ],
   dontUseWith: [
     [],
@@ -45,12 +45,12 @@ export default {
     tutorial: {maxSymbol: 4, timeScale: 10,   runesCount: [2, 2],   maxOneTime: 1, tutor: true},
     easy0:    {maxSymbol: 4, timeScale: 3,    runesCount: [6, 8],   maxOneTime: 2, score: 100},
     easy1:    {maxSymbol: 6, timeScale: 2.75, runesCount: [8, 10],  maxOneTime: 2, score: 125},
-    easy2:    {maxSymbol: 7, timeScale: 2.5,  runesCount: [10, 12], maxOneTime: 2, score: 150},
-    easy3:    {maxSymbol: 9, timeScale: 2.25, runesCount: [10, 12], maxOneTime: 3, score: 175},
-    middle0:  {maxSymbol: 9, timeScale: 2,    runesCount: [12, 14], maxOneTime: 3, score: 200},
-    middle1:  {maxSymbol: 9, timeScale: 1.75, runesCount: [12, 15], maxOneTime: 3, score: 225},
-    middle2:  {maxSymbol: 9, timeScale: 1.5,  runesCount: [15, 17], maxOneTime: 3, score: 250},
-    hard0:    {maxSymbol: 9, timeScale: 1.4,  runesCount: [17, 20], maxOneTime: 4, score: 275},
+    easy2:    {maxSymbol: 7, timeScale: 2.5,  runesCount: [12, 14], maxOneTime: 2, score: 150},
+    easy3:    {maxSymbol: 9, timeScale: 2.5,  runesCount: [12, 14], maxOneTime: 2, score: 175},
+    middle0:  {maxSymbol: 9, timeScale: 2.25, runesCount: [15, 17], maxOneTime: 3, score: 200},
+    middle1:  {maxSymbol: 9, timeScale: 2,    runesCount: [17, 20], maxOneTime: 3, score: 225},
+    middle2:  {maxSymbol: 9, timeScale: 1.8,  runesCount: [20, 23], maxOneTime: 3, score: 250},
+    hard0:    {maxSymbol: 9, timeScale: 1.6,  runesCount: [23, 26], maxOneTime: 3, score: 275},
   },
   tutorialFinished: false,
   gameStat: {
