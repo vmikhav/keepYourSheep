@@ -129,7 +129,11 @@ export default class extends Phaser.Scene {
   }
 
   selectLevelDifficult() {
-    switch (config.sheepCurrent - config.gameStat.failSequence >= 2 ? 2 : 0) {
+    let level = config.sheepCurrent;
+    if (config.gameStat.failSequence >= 2) {
+      level -= 2
+    }
+    switch (level) {
       case -2: case -1: case 0: case 1:
         this.preset = config.presets.easy0; break;
       case 2: case 3:
