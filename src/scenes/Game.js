@@ -66,7 +66,7 @@ export default class extends Phaser.Scene {
           } else if (config.relaxMode) {
             scoreLabel = '.relax_high_score';
           }
-          let text = config.score + ': ' + config.score + '\n\n';
+          let text = config.lang.score + ': ' + config.score + '\n\n';
           if (config.score > localStorage[config.localStorageName + scoreLabel]) {
             localStorage[config.localStorageName + scoreLabel] = config.score;
             text += config.lang.newHighScore + '!';
