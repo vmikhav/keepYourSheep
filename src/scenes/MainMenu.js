@@ -28,13 +28,15 @@ export default class extends Phaser.Scene {
       duration: 1500,
       delay: 0,
       onComplete: () => {
-        this.moveDistance = (worldView.centerY - 200) - (worldView.top - 300);
-        this.startButton = new Button(this, worldView.centerX, worldView.top - 300, 500, 150, config.lang.play, 'buttonLong_brown', () => this.start());
+        this.moveDistance = (worldView.centerY - 200) - (worldView.top - 500);
+        this.startButton = new Button(this, worldView.centerX, worldView.top - 500, 500, 150, config.lang.play, 'buttonLong_brown', () => this.start());
         this.add.existing(this.startButton);
-        this.expertButton = new Button(this, worldView.centerX, worldView.top - 100, 500, 100, config.lang.expertMode, 'buttonLong_brown', () => this.start('expert'));
+        this.expertButton = new Button(this, worldView.centerX, worldView.top - 300, 500, 100, config.lang.expertMode, 'buttonLong_brown', () => this.start('expert'));
         this.add.existing(this.expertButton);
+        this.relaxButton = new Button(this, worldView.centerX, worldView.top - 150, 500, 100, config.lang.relaxMode, 'buttonLong_brown', () => this.start('relax'));
+        this.add.existing(this.relaxButton);
         this.tweens.add({
-          targets: [this.startButton, this.expertButton],
+          targets: [this.startButton, this.expertButton, this.relaxButton],
           y: '+=' + this.moveDistance,
           ease: 'Sine.easeOut',
           duration: 1000,
@@ -46,7 +48,7 @@ export default class extends Phaser.Scene {
   start(mode = 'normal') {
     const worldView = this.cameras.main.worldView;
     this.tweens.add({
-      targets: [this.startButton, this.expertButton],
+      targets: [this.startButton, this.expertButton, this.relaxButton],
       y: '-=' + this.moveDistance,
       ease: 'Sine.easeIn',
       duration: 1000,
@@ -61,6 +63,10 @@ export default class extends Phaser.Scene {
         if (mode === 'expert') {
           resetGameStat();
           config.permanentMode = true;
+          this.scene.start('GameScene');
+        } else if (mode === 'relax') {
+          resetGameStat();
+          config.relaxMode = true;
           this.scene.start('GameScene');
         } else {
           if (config.tutorialFinished) {

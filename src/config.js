@@ -62,6 +62,7 @@ export default {
     sheepDelta: 0,
   },
   permanentMode: false,
+  relaxMode: false,
   score: 0,
   sheepTotal: 15,
   sheepCurrent: 15,

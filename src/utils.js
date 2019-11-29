@@ -61,6 +61,7 @@ export const resetGameStat = () => {
   config.score = 0;
   config.sheepCurrent = 0;
   config.permanentMode = false;
+  config.relaxMode = false;
 }
 
 export const generateSheep = (scene, count, previousSheep = null, newSheep = 0) => {

@@ -60,7 +60,12 @@ export default class extends Phaser.Scene {
             ease: 'Sine.easeOut',
             duration: 1500,
           });
-          const scoreLabel = config.permanentMode ? '.expert_high_score' : '.high_score';
+          let scoreLabel = '.high_score';
+          if (config.permanentMode) {
+            scoreLabel = '.expert_high_score';
+          } else if (config.relaxMode) {
+            scoreLabel = '.relax_high_score';
+          }
           let text = config.score + ': ' + config.score + '\n\n';
           if (config.score > localStorage[config.localStorageName + scoreLabel]) {
             localStorage[config.localStorageName + scoreLabel] = config.score;

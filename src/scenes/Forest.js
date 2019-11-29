@@ -90,7 +90,10 @@ export default class Forest extends Phaser.Scene {
             newSymbol = Phaser.Math.Between(1, this.maxSymbol);
           } while (this.lastSymbol === newSymbol);
           this.lastSymbol = newSymbol
-          const stepDuration = config.symbolTime[newSymbol] * this.timeScale;
+          let stepDuration = config.symbolTime[newSymbol] * this.timeScale;
+          if (config.relaxMode) {
+            stepDuration *= 2;
+          }
           this.runes.push(new Rune(this, this.basePosition.x, this.basePosition.y, -1, newSymbol, stepDuration, () => this.runeMissed()));
           active++;
         }
@@ -136,7 +139,10 @@ export default class Forest extends Phaser.Scene {
           do {
             position = Phaser.Math.Between(0, 3);
           } while (positions.includes(position));
-          const stepDuration = config.symbolTime[newSymbol] * this.timeScale * (1 + active * 0.25);
+          let stepDuration = config.symbolTime[newSymbol] * this.timeScale * (1 + active * 0.25);
+          if (config.relaxMode) {
+            stepDuration *= 2;
+          }
           this.runes.push(new Rune(this, this.additionalPositions[position].x, this.additionalPositions[position].y, position, newSymbol, stepDuration, () => this.runeMissed()));
         }
         if (this.runes.length === this.runesCount) {

@@ -12,6 +12,10 @@ lang.en.expertMode = "Expert mode";
 lang.uk.expertMode = "Режим експерта";
 lang.ru.expertMode = "Режим эксперта";
 
+lang.en.relaxMode = "Relax mode";
+lang.uk.relaxMode = "Режим дзен";
+lang.ru.relaxMode = "Режим дзэн";
+
 lang.en.sheep = "Sheep";
 lang.uk.sheep = "Вівці";
 lang.ru.sheep = "Овцы";
