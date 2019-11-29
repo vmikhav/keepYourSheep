@@ -16,10 +16,10 @@ export default class Forest extends Phaser.Scene {
     this.runesCount = null;
 
     this.scoreMultipler = 1;
-    this.gameStep = 0;
     this.successful = 0;
     this.score = 0;
     this.lastSymbol = -1;
+    this.failed = false;
 
     this.backgroundMask = null;
     this.runes = [];
@@ -49,6 +49,7 @@ export default class Forest extends Phaser.Scene {
     this.successful = 0;
     this.score = 0;
     this.lastSymbol = -1;
+    this.failed = false;
 
     this.basePosition = {x: this.cameras.main.centerX, y: this.cameras.main.centerY};
     this.additionalPositions = [
@@ -194,7 +195,10 @@ export default class Forest extends Phaser.Scene {
   }
 
   runeMissed() {
+    if (this.failed) {return;}
+    this.failed = true;
     this.timer.paused = true
+    this.extraTimer.paused = true
     for (let i = 0; i < this.runes.length; i++) {
       if (this.runes[i].isActive && !this.runes[i].isFailed) {
         this.runes[i].hide();
