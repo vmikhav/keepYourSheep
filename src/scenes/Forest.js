@@ -40,6 +40,10 @@ export default class Forest extends Phaser.Scene {
     this.itemScore = params && params.score ? params.score : 50;
     this.runesCount = params && params.runesCount ? Phaser.Math.Between(params.runesCount[0], params.runesCount[1]) : Phaser.Math.Between(3, 6);
 
+    if (config.relaxMode && this.maxOneTime > 2) {
+      this.maxOneTime = 2;
+    }
+
     this.scoreMultipler = 1;
     this.gameStep = 0;
     this.successful = 0;
