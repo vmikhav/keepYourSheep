@@ -74,6 +74,9 @@ export default class Rune extends Phaser.GameObjects.Container {
 
   checkSymbol(symbols, score = 0) {
     let result = false;
+    if (!this.isActive || this.isSucessful || this.isFailed) {
+      return result;
+    }
     for(const symbol of symbols) {
       if (symbol.index === this.symbol) {
         result = true;
