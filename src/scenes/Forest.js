@@ -26,6 +26,9 @@ export default class Forest extends Phaser.Scene {
 
     this.timer = null;
     this.extraTimer = null;
+
+    this.multiplerText = 0;
+    this.multiplerTween = null;
   }
   init () {}
   preload () {}
@@ -45,7 +48,6 @@ export default class Forest extends Phaser.Scene {
     }
 
     this.scoreMultipler = 1;
-    this.gameStep = 0;
     this.successful = 0;
     this.score = 0;
     this.lastSymbol = -1;
@@ -161,6 +163,18 @@ export default class Forest extends Phaser.Scene {
     this.time.addEvent({
       delay: 750,
       callback: () => {
+        const worldView = this.cameras.main.worldView;
+        const style = {fontSize: 40, fontFamily: '"Press Start 2P"'};
+        this.multiplerText = this.add.text(worldView.centerX, worldView.top + 50, '', style).setOrigin(0.5);
+        this.multiplerTween = this.tweens.add({
+          targets: this.multiplerText,
+          alpha: {from: 1, to: 0},
+          ease: 'Sine.easeOut',
+          duration: 1500,
+        });
+        this.multiplerTween.pause();
+        this.multiplerText.setAlpha(0);
+
         this.timer.paused = false;
         this.extraTimer.paused = false;
       }
@@ -179,7 +193,7 @@ export default class Forest extends Phaser.Scene {
 
   applySymbol(symbols) {
     let result = false;
-    const score = this.isTutorial ? -1 : this.itemScore * this.scoreMultipler;
+    const score = this.isTutorial ? -1 : this.itemScore * (1 + this.scoreMultipler / 10);
     for (let i = 0; i < this.runes.length; i++) {
       if (this.runes[i].isActive) {
         result = this.runes[i].checkSymbol(symbols, score);
@@ -189,8 +203,15 @@ export default class Forest extends Phaser.Scene {
       }
     }
     if (result) {
+      if (this.scoreMultipler > 1 && !this.isTutorial) {
+        this.multiplerText.setText(this.scoreMultipler + 'x');
+        this.multiplerTween.restart();
+      }
       this.successful++;
       this.score += result;
+      this.scoreMultipler++;
+    } else {
+      this.scoreMultipler = 1;
     }
   }
 

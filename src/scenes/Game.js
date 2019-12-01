@@ -139,13 +139,13 @@ export default class extends Phaser.Scene {
       level -= 2
     }
     switch (level) {
-      case -2: case -1: case 0: case 1:
+      case -2: case -1: case 0:
         this.preset = config.presets.easy0; break;
-      case 2: case 3:
+      case 1:
         this.preset = config.presets.easy1; break;
-      case 4: case 5:
+      case 2: case 3: case 4:
         this.preset = config.presets.easy2; break;
-      case 6: case 7: case 8:
+      case 5: case 6: case 7: case 8:
         this.preset = config.presets.easy3; break;
       case 9: case 10: case 11:
         this.preset = config.presets.middle0; break;
