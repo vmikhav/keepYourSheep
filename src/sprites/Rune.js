@@ -36,6 +36,7 @@ export default class Rune extends Phaser.GameObjects.Container {
     this.isActive = true;
     this.isSucessful = false;
     this.isFailed = false;
+    this.isHidding = false;
 
     this.stepDuration = time;
     this.timerDelta = this.timerTotal / (this.stepDuration / this.timerDelay);
@@ -141,6 +142,8 @@ export default class Rune extends Phaser.GameObjects.Container {
   }
 
   hide() {
+    if (this.isHidding) {return;}
+    this.isHidding = true;
     this.timer.destroy();
     this.changeTimer = false;
     this.scene.tweens.add({

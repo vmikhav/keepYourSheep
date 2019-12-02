@@ -135,7 +135,7 @@ export default class Forest extends Phaser.Scene {
             reservedSymbols = reservedSymbols.concat(this.runes[i].symbol, config.dontUseWith[this.runes[i].symbol]);
           }
           if (this.runes[i].isFailed) {
-            failed = true
+            failed = true;
           }
         }
         if (!failed && this.runes.length < this.runesCount && active && active < this.maxOneTime) {
@@ -192,8 +192,9 @@ export default class Forest extends Phaser.Scene {
   }
 
   applySymbol(symbols) {
+    if (this.failed) {return;}
     let result = false;
-    const score = this.isTutorial ? -1 : this.itemScore * (1 + this.scoreMultipler / 10);
+    const score = this.isTutorial ? -1 : Math.floor(this.itemScore * (1 + this.scoreMultipler / 10));
     for (let i = 0; i < this.runes.length; i++) {
       if (this.runes[i].isActive) {
         result = this.runes[i].checkSymbol(symbols, score);
